@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Settings</ion-title>
+    <ion-buttons end [hidden]="!settingsForm.dirty">
+      <button ion-button (click)="saveForm();">
+        Save
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="settings-content">
+  
+  <div class="user-image-content" text-center *ngIf="!auth.isAuthenticated()">
+    <ion-row no-padding class="user-image-row">
+      <ion-col no-padding width-40>
+        <preload-image class="user-image" [ratio]="{w:1, h:1}" src="./assets/images/avatar.png" alt="aca va la img" title="IMAGE!"></preload-image>
+      </ion-col>
+    </ion-row>
+    <button ion-button small (click)="gotoStartPage()"><ion-icon name="lock"></ion-icon> &nbsp; Login or Register
+</button>
+  </div>
+
+  <div class="user-image-content" text-center *ngIf="auth.isAuthenticated()">
+    <ion-row no-padding class="user-image-row">
+      <ion-col no-padding width-40>
+        <preload-image class="user-image" [ratio]="{w:1, h:1}" [src]="profile.user.image" alt="aca va la img" title="IMAGE!"></preload-image>
+      </ion-col>
+    </ion-row>
+    <button ion-button small (click)="showTakePicture()"><ion-icon name="camera"></ion-icon> &nbsp; Take Photo
+</button>
+  </div>
+
+  <form [formGroup]="settingsForm" class="settings-form" *ngIf="auth.isAuthenticated()">
+    <ion-list class="user-data-content">
+      <ion-item>
+        <ion-label stacked>Name</ion-label>
+        <ion-input type="text" formControlName="name" [(ngModel)]="profile.user.name"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <!--<ion-row class="user-preferences-row">
+      <span class="radio-tags-label">Currency</span>
+      <ion-list class="radio-tags" radio-group formControlName="currency">
+        <ion-item class="radio-tag">
+          <ion-label>&#36;</ion-label>
+          <ion-radio value="dollar"></ion-radio>
+        </ion-item>
+        <ion-item class="radio-tag">
+          <ion-label>
+            <span>&euro;</span>
+          </ion-label>
+          <ion-radio value="euro"></ion-radio>
+        </ion-item>
+        <ion-item class="radio-tag">
+          <ion-label>
+            <span>&pound;</span>
+          </ion-label>
+          <ion-radio value="pound"></ion-radio>
+        </ion-item>
+      </ion-list>
+    </ion-row>-->
+
+    <!--<ion-row class="user-preferences-row">
+      <span class="radio-tags-label">Weather</span>
+      <ion-list class="radio-tags" radio-group formControlName="weather">
+        <ion-item class="radio-tag">
+          <ion-label>&deg;C</ion-label>
+          <ion-radio value="celsius"></ion-radio>
+        </ion-item>
+        <ion-item class="radio-tag">
+          <ion-label>
+            <span>&deg;F</span>
+          </ion-label>
+          <ion-radio value="fahrenheit"></ion-radio>
+        </ion-item>
+      </ion-list>
+    </ion-row>-->
+
+    <!--<ion-list class="switchers-list">
+      <ion-item class="switcher-item">
+        <ion-label>Notifications</ion-label>
+        <ion-toggle formControlName="notifications"></ion-toggle>
+      </ion-item>
+    </ion-list>-->
+  </form>
+
+  <button class="alt-button" ion-button full (click)="showTermsModal()">Terms of use</button>
+
+  <button class="alt-button logout-button" ion-button full icon-left (click)="logout()" *ngIf="auth.isAuthenticated()">
+    <ion-icon name="log-out"></ion-icon>
+    Log out
+  </button>
+</ion-content>

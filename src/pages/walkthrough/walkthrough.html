@@ -1,0 +1,64 @@
+<ion-header class="walkthrough-header">
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button class="skip-button" (click)="skipIntro()" [hidden]="lastSlide">Skip</button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="walkthrough-content">
+  <ion-slides #slider (ionSlideDidChange)="onSlideChanged()" pager="true">
+    <ion-slide class="slide-1">
+      <ion-row class="intro-image-row">
+        <ion-col center width-64 no-padding>
+          <preload-image [ratio]="{w:1, h:1}" src="./assets/images/logo_white.png" alt="app logo" title="Polr Golf"></preload-image>
+        </ion-col>
+      </ion-row>
+      <div class="main-title">
+        <img src="./assets/images/header_logo_white.png" alt="app logo" title="Polr Golf">
+      </div>
+      <div class="button-bar">
+        <button ion-button primary (click)="goToLogin()">Log in</button>
+        <button ion-button primary (click)="goToSignup()">Register</button>
+      </div>
+    </ion-slide>
+    <!--<ion-slide class="slide-2">
+      <ion-row class="intro-image-row">
+        <ion-col center width-64 no-padding>
+          <preload-image [ratio]="{w:1, h:1}" src="./assets/images/compose.png" alt="slide 2 img" title="Polr Golf"></preload-image>
+        </ion-col>
+      </ion-row>
+      <h2 class="main-title">Track your score</h2>
+      <p class="intro-text">
+        Use the built in score manger to track your score on every hole.
+      </p>
+    </ion-slide>-->
+    <!--<ion-slide class="slide-3">
+      <ion-row class="intro-image-row">
+        <ion-col center width-64 no-padding>
+          <preload-image [ratio]="{w:1, h:1}" src="./assets/images/binos.png" alt="slide 3 img" title="Polr Golf"></preload-image>
+        </ion-col>
+      </ion-row>
+      <h2 class="main-title">Scout your shot</h2>
+      <p class="intro-text">
+        Find your <strong>P</strong>ath <strong>O</strong>f <strong>L</strong>east <strong>R</strong>esistance, then save
+        or share.
+      </p>
+    </ion-slide>-->
+    <!--<ion-slide class="slide-4">
+      <ion-row class="intro-image-row">
+        <ion-col center width-64 no-padding>
+          <preload-image [ratio]="{w:1, h:1}" src="./assets/images/networking.png" alt="slide 4 img" title="ion2FullApp"></preload-image>
+        </ion-col>
+      </ion-row>
+      <h2 class="main-title">Share and Rate</h2>
+      <p class="intro-text">
+        How'd that shot look? Share or rate your scout note and your done!
+      </p>
+      <div class="button-bar">
+        <button ion-button primary (click)="goToLogin()">Log in</button>
+        <button ion-button primary (click)="goToSignup()">Sign up</button>
+      </div>
+    </ion-slide>-->
+  </ion-slides>
+</ion-content>

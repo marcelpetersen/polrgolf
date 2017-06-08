@@ -10,13 +10,15 @@
       Take Photo
     </ion-title>
     <ion-buttons end>
-      <button ion-button (click)="takePicture();">
-        Save
+      <button ion-button (click)="startMapping()">
+        Start
       </button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="terms-content">
-
+<ion-content>
+  <div class="map-container">
+    <google-map [options]="map_model.map_options"></google-map>
+  </div>
 </ion-content>

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ViewController, LoadingController, Loading } from 'ionic-angular';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-
-import { Transfer, TransferObject } from '@ionic-native/transfer';
 import { User } from '@ionic/cloud-angular';
+import { GoogleMap } from "../../components/google-map/google-map";
+import { GoogleMapsService } from "../maps/maps.service";
+import { MapsModel } from '../maps/maps.model';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   selector: 'take-picture-page',
@@ -11,111 +12,115 @@ import { User } from '@ionic/cloud-angular';
 })
 
 export class TakePicturePage {
-
+  @ViewChild(GoogleMap) _GoogleMap: GoogleMap;
+  map_model: MapsModel = new MapsModel();
   loading: Loading;
+  mappingSessionActive: boolean;
+  mappingCoords: string[];
 
   constructor(
     public view: ViewController,
-    private camera: Camera,
-    private transfer: Transfer,
+    public GoogleMapsService: GoogleMapsService,
+    public geolocation: Geolocation,
     public loadingCtrl: LoadingController,
     public user: User,
   ) {
-    // const cameraPreviewOpts: CameraPreviewOptions = {
-    //   x: 0,
-    //   y: 65,
-    //   width: window.screen.width,
-    //   height: window.screen.height,
-    //   camera: 'front',
-    //   tapPhoto: true,
-    //   previewDrag: false,
-    //   toBack: false
-    // };
-
-    // this.cameraPreview.startCamera(cameraPreviewOpts).then(
-    //   (res) => {
-    //     console.log(res)
-    //   },
-    //   (err) => {
-    //     console.log(err)
-    //   });
-  }
-
-  takePicture() {
-
-    this.loading = this.loadingCtrl.create({
-      content: 'Saving...',
-    });
+    this.loading = this.loadingCtrl.create();
     this.loading.present();
 
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
-    }
-
-    this.camera.getPicture(options).then((imageData) => {
-
-
-      let picture = 'data:image/jpeg;base64,' + imageData;
-      var url = "https://api.cloudinary.com/v1_1/zendoks/upload";
-
-      var options = {
-        fileKey: "file",
-        fileName: 'temp.jpg',
-        chunkedMode: false,
-        mimeType: "multipart/form-data",
-        params: { 'fileName': 'tmp.jpg', 'upload_preset': 'oc7xe4iz' }
-      };
-
-      const fileTransfer: TransferObject = this.transfer.create();
-      fileTransfer.upload(picture, url, options).then(data => {
-        this.user.details.image = JSON.parse(data.response).url;
-        this.user.save().then(() => {
-          this.loading.dismissAll();
-          this.view.dismiss();
-        });
-      });
-
-
-    }, (err) => {
-      // Handle error
+    this._GoogleMap.$mapReady.subscribe(map => {
+      this.map_model.init(map);
+      this.geolocateMe();
     });
+  }
 
+  geolocateMe() {
+    let env = this,
+      _loading = env.loadingCtrl.create();
 
-    // const pictureOpts: CameraPreviewPictureOptions = {
-    //   width: 300,
-    //   height: 300,
-    //   quality: 100
-    // }
+    _loading.present();
+    this.geolocation.getCurrentPosition().then((position) => {
+      console.log('Alt: ' + position.coords.altitude);
+      let current_location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      env.map_model.search_query = position.coords.latitude.toFixed(2) + ", " + position.coords.longitude.toFixed(2);
+      env.map_model.addPlaceToMap(current_location, '#8dc63f');
+      //env.setOrigin(current_location);
+      env.map_model.using_geolocation = true;
+      _loading.dismiss();
+    }).catch((error) => {
+      console.log('Error getting location', error);
+      _loading.dismiss();
+    });
+  }
 
-    // this.cameraPreview.takePicture(pictureOpts).then((imageData) => {
+  startMapping() {
+    let env = this;
+    if (env.mappingSessionActive) {
+      env.mappingSessionActive = false;
+      console.log('Mapping stopped');
+    } else {
+      env.mappingSessionActive = true;
+      console.log('Mapping started');
+      env.engadgeMapping();
+    }
+  }
 
-    //   let picture = 'data:image/jpeg;base64,' + imageData;
-    //   this.cameraPreview.hide();
-    //   this.cameraPreview.stopCamera();
+  engadgeMapping() {
+    let env = this;
+    setTimeout(function () {
+      if (env.mappingSessionActive) {
+        env.geolocation.getCurrentPosition().then((position) => {
+          //env.mappingAlts.push(position.coords.altitude);
+          console.log('Alt: ' + position.coords.altitude);
+          env.engadgeMapping();
+        });
+      }
+    }, 2000);
+  }
 
-    //   var url = "https://api.cloudinary.com/v1_1/zendoks/upload";
+  setOrigin(location: google.maps.LatLng) {
+    let env = this;
+    env.map_model.cleanMap();
+    env.map_model.directions_origin.location = location;
+    env.map_model.addPlaceToMap(location, '#8dc63f');
+    // env.courses.geoQuery({ long: location.lng(), lat: location.lat() }).subscribe(
+    //   courses => {
 
-    //   var options = {
-    //     fileKey: "file",
-    //     fileName: 'temp.jpg',
-    //     chunkedMode: false,
-    //     mimeType: "multipart/form-data",
-    //     params: { 'fileName': 'tmp.jpg', 'upload_preset': 'oc7xe4iz' }
-    //   };
+    //     if (courses.length > 0) {
 
-    //   const fileTransfer: TransferObject = this.transfer.create();
-    //   fileTransfer.upload(picture, url, options).then(data => {
-    //     this.user.details.image = JSON.parse(data.response).url;
-    //     this.user.save().then(() => {
-    //       this.loading.dismissAll();
-    //       this.view.dismiss();
+    //       let bound = new google.maps.LatLngBounds();
+    //       for (var i = 0; i < courses.length; i++) {
+    //         bound.extend(new google.maps.LatLng(courses[i].location.coordinates[1], courses[i].location.coordinates[0]));
+    //         env.map_model.addNearbyPlace(courses[i]);
+    //       }
+
+    //       env.choosePlace(env.map_model.nearby_places[0]);
+    //       env.map_model.map.fitBounds(bound);
+    //       this._loading.dismiss();
+
+    //     } else {
+    //       env._loading.dismiss();
+    //       let toast = env.toastCtrl.create({
+    //         message: 'No courses found in this area.',
+    //         duration: 3000
+    //       });
+    //       toast.present();
+    //     }
+
+    //   },
+    //   e => {
+    //     env._loading.dismiss();
+    //     let toast = env.toastCtrl.create({
+    //       message: 'Error loading map.',
+    //       duration: 3000
     //     });
+    //     toast.present();
+    //     console.log('onError: %s', e);
+    //   },
+    //   () => {
+    //     env._loading.dismiss();
+    //     console.log('onCompleted');
     //   });
-
-    // });
 
   }
 

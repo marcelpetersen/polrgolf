@@ -41,7 +41,7 @@ export class MapsPage implements OnInit {
       this.map_model.init(map);
       this.geolocateMe();
     });
-    
+
   }
 
   ionViewDidEnter() {
@@ -148,7 +148,6 @@ export class MapsPage implements OnInit {
       _loading = env.loadingCtrl.create();
 
     _loading.present();
-
     this.geolocation.getCurrentPosition().then((position) => {
       let current_location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       env.map_model.search_query = position.coords.latitude.toFixed(2) + ", " + position.coords.longitude.toFixed(2);

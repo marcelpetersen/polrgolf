@@ -35,5 +35,5 @@ This will add in the appropriate plugins and platforms from the package.json
 
 ## Deploying to Google Play Store
 cordova build --release android
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore production android-release-unsigned.apk polrgolf
-zipalign -v 4 android-release-unsigned.apk polrgolf.apk 
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore polrgolfupload.keystore android-release-unsigned.apk polrgolf
+(In skd root/build-tools) ./zipalign -v 4 ~/Documents/dev/polrgolf/platforms/android/build/outputs/apk/android-release-unsigned.apk ~/Documents/dev/polrgolf/platforms/android/build/outputs/apk/polrgolf.apk

@@ -14,13 +14,16 @@
           <preload-image [ratio]="{w:1, h:1}" src="./assets/images/logo_white.png" alt="app logo" title="Polr Golf"></preload-image>
         </ion-col>
       </ion-row>
-      <div class="main-title">
-        <img src="./assets/images/header_logo_white.png" alt="app logo" title="Polr Golf">
-      </div>
       <div class="button-bar">
-        <button ion-button primary (click)="goToLogin()">Log in</button>
-        <button ion-button primary (click)="goToSignup()">Register</button>
+        <button ion-button color="dark" large (click)="goToLogin()">Log in</button>
+        <button ion-button color="dark" large (click)="goToSignup()">Sign Up</button>
       </div>
+    </ion-slide>
+    <ion-slide class="slide-2">
+      <h2 class="main-title">Instant Gratification</h2>
+      <p class="intro-text">
+        Open the app and see the nearest courses to your current location.
+      </p>
     </ion-slide>
     <!--<ion-slide class="slide-2">
       <ion-row class="intro-image-row">
@@ -33,6 +36,12 @@
         Use the built in score manger to track your score on every hole.
       </p>
     </ion-slide>-->
+    <ion-slide class="slide-3">
+      <h2 class="main-title">Map Search</h2>
+      <p class="intro-text">
+        Easily search for courses in other locations by simply typing in a city or location name.
+      </p>
+    </ion-slide>
     <!--<ion-slide class="slide-3">
       <ion-row class="intro-image-row">
         <ion-col center width-64 no-padding>
@@ -45,6 +54,16 @@
         or share.
       </p>
     </ion-slide>-->
+    <ion-slide class="slide-4">
+      <h2 class="main-title">Course Details</h2>
+      <p class="intro-text">
+        Click a course to get instant details and easily navigate directly from our app.
+      </p>
+      <div class="button-bar">
+        <button ion-button primary (click)="goToLogin()">Log in</button>
+        <button ion-button primary (click)="goToSignup()">Sign up</button>
+      </div>
+    </ion-slide>
     <!--<ion-slide class="slide-4">
       <ion-row class="intro-image-row">
         <ion-col center width-64 no-padding>

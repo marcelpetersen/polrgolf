@@ -12,6 +12,8 @@ import { ProfileService } from '../profile/profile.service';
 import { Auth, User } from '@ionic/cloud-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Transfer, TransferObject } from '@ionic-native/transfer';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { AppVersion } from '@ionic-native/app-version';
 
 @Component({
   selector: 'settings-page',
@@ -23,6 +25,7 @@ export class SettingsPage {
   rootPage: any = WalkthroughPage;
   loading: any;
   profile: ProfileModel = new ProfileModel();
+  versionNumber: string;
 
   constructor(
     public nav: NavController,
@@ -33,9 +36,16 @@ export class SettingsPage {
     public user: User,
     private camera: Camera,
     private transfer: Transfer,
-    public toastCtrl: ToastController
+    public toastCtrl: ToastController,
+    public socialSharing: SocialSharing,
+    public appVersion: AppVersion
   ) {
     this.loading = this.loadingCtrl.create();
+
+    var env = this;
+    appVersion.getVersionNumber().then(function (version) {
+      env.versionNumber = version;
+    });
 
     this.settingsForm = new FormGroup({
       name: new FormControl(),
@@ -85,6 +95,18 @@ export class SettingsPage {
 
   gotoStartPage() {
     this.nav.setRoot(WalkthroughPage);
+  }
+
+  shareApp() {
+    //this code is to use the social sharing plugin
+    // message, subject, file, url
+    this.socialSharing.share('Check out this awesome golf app I found called PorlGolf! Download it now at http://www.polrgolf.com', 'Download PolrGolf!', '')
+      .then(() => {
+        console.log('Success!');
+      })
+      .catch(() => {
+        console.log('Error');
+      });
   }
 
   showTakePicture() {

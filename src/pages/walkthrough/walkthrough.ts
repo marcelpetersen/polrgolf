@@ -31,7 +31,7 @@ export class WalkthroughPage {
 
   onSlideChanged() {
     // If it's the last slide, then hide the 'Skip' button on the header
-    this.lastSlide = this.slider.isEnd();
+    //this.lastSlide = this.slider.isEnd();
   }
 
   goToLogin() {

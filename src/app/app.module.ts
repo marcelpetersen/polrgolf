@@ -68,6 +68,7 @@ import { GoogleLoginPage } from '../pages/google-login/google-login';
 import { ContactCardPage } from '../pages/contact-card/contact-card';
 import { GoogleLoginService } from '../pages/google-login/google-login.service';
 import { GoogleMapsService } from '../pages/maps/maps.service';
+import { AppVersion } from '@ionic-native/app-version';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -175,6 +176,7 @@ const cloudSettings: CloudSettings = {
     GooglePlus,
     Keyboard,
     Geolocation,
+    AppVersion,
     LaunchNavigator,
     Camera,
     Transfer,

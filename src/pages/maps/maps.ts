@@ -86,10 +86,8 @@ export class MapsPage implements OnInit {
 
           env.choosePlace(env.map_model.nearby_places[0]);
           env.map_model.map.fitBounds(bound);
-          this._loading.dismiss();
 
         } else {
-          env._loading.dismiss();
           let toast = env.toastCtrl.create({
             message: 'No courses found in this area.',
             duration: 3000
@@ -99,7 +97,6 @@ export class MapsPage implements OnInit {
 
       },
       e => {
-        env._loading.dismiss();
         let toast = env.toastCtrl.create({
           message: 'Error loading map.',
           duration: 3000
@@ -108,7 +105,6 @@ export class MapsPage implements OnInit {
         console.log('onError: %s', e);
       },
       () => {
-        env._loading.dismiss();
         console.log('onCompleted');
       });
 
@@ -144,24 +140,23 @@ export class MapsPage implements OnInit {
   }
 
   geolocateMe() {
-    let env = this,
-      _loading = env.loadingCtrl.create();
-
-    _loading.present();
+    let env = this;
     this.geolocation.getCurrentPosition().then((position) => {
       let current_location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       env.map_model.search_query = position.coords.latitude.toFixed(2) + ", " + position.coords.longitude.toFixed(2);
       env.setOrigin(current_location);
       env.map_model.using_geolocation = true;
-      _loading.dismiss();
+      env._loading.dismiss();
     }).catch((error) => {
       console.log('Error getting location', error);
-      _loading.dismiss();
+      env._loading.dismiss();
     });
   }
 
   choosePlace(place) {
     let env = this;
+    this._loading = this.loadingCtrl.create();
+    this._loading.present();
 
     // Check if the place is not already selected
     if (place) {
@@ -181,7 +176,6 @@ export class MapsPage implements OnInit {
           let directions = data[0],
             distance = data[1].rows[0].elements[0].distance.text,
             duration = data[1].rows[0].elements[0].duration.text;
-
           env.map_model.directions_display.setDirections(directions);
           env.currentDistanceText = 'That\'s ' + distance + ' away and will take ' + duration;
           place.details.distanceText = 'That\'s ' + distance + ' away and will take ' + duration;
@@ -190,6 +184,7 @@ export class MapsPage implements OnInit {
           console.log('onError: %s', e);
         },
         () => {
+          env._loading.dismiss();
           console.log('onCompleted');
         }
       );

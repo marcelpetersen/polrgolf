@@ -26,12 +26,12 @@
         <ion-input type="password" placeholder="Confirm password" formControlName="confirm_password" show-hide-input></ion-input>
       </ion-item>
     </show-hide-container>
-    <button ion-button block class="auth-action-button signup-button" type="submit" [disabled]="!signup.valid">Sign up</button>
+    <button ion-button block large class="auth-action-button signup-button" type="submit" [disabled]="!signup.valid">Sign up</button>
   </form>
   <p class="auth-divider">
     Or
   </p>
-  <button ion-button block class="facebook-auth-button" (click)="doFacebookSignup()">Sign up with Facebook</button>
+  <button ion-button block large class="facebook-auth-button" (click)="doFacebookSignup()">Sign up with Facebook</button>
   <p class="legal-stuff">
     By creating an account you agree to our <a class="legal-action" (click)="showTermsModal()">Terms of use</a>
   </p>

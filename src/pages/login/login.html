@@ -14,7 +14,7 @@
         <ion-input type="password" placeholder="Password" formControlName="password" show-hide-input></ion-input>
       </ion-item>
     </show-hide-container>
-    <button ion-button block class="auth-action-button login-button" type="submit" [disabled]="!login.valid">Log in</button>
+    <button ion-button block large class="auth-action-button login-button" type="submit" [disabled]="!login.valid">Log in</button>
   </form>
   <ion-row class="alt-options">
     <ion-col no-padding width-50>
@@ -27,5 +27,5 @@
   <p class="auth-divider">
     Or
   </p>
-  <button ion-button block class="facebook-auth-button" (click)="doFacebookLogin()">Log in with Facebook</button>
+  <button ion-button block large class="facebook-auth-button" (click)="doFacebookLogin()">Log in with Facebook</button>
 </ion-content>

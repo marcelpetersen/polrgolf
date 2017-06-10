@@ -7,6 +7,7 @@ import { ContactModel } from './contact.model';
 import { Courses } from '../../providers/providers';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
 import { Geolocation } from '@ionic-native/geolocation';
+import { PlayRoundPage } from '../play-round/play-round';
 
 @Component({
   selector: 'contact-card-page',
@@ -45,7 +46,7 @@ export class ContactCardPage {
   }
 
   startRound() {
-    //coming soon
+    this.navCtrl.push(PlayRoundPage, { course: this.course });
   }
 
   launchMaps() {

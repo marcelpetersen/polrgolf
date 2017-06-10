@@ -24,6 +24,7 @@ import { FormLayoutPage } from '../pages/form-layout/form-layout';
 import { FiltersPage } from '../pages/filters/filters';
 import { TermsOfServicePage } from '../pages/terms-of-service/terms-of-service';
 import { TakePicturePage } from '../pages/take-picture/take-picture';
+import { PlayRoundPage } from '../pages/play-round/play-round';
 
 import { PreloadImage } from '../components/preload-image/preload-image';
 import { BackgroundImage } from '../components/background-image/background-image';
@@ -105,6 +106,7 @@ const cloudSettings: CloudSettings = {
     FiltersPage,
     TermsOfServicePage,
     TakePicturePage,
+    PlayRoundPage,
     MapsPage,
     FunctionalitiesPage,
     GoogleLoginPage,
@@ -149,6 +151,7 @@ const cloudSettings: CloudSettings = {
     FiltersPage,
     TermsOfServicePage,
     TakePicturePage,
+    PlayRoundPage,
     MapsPage,
     FunctionalitiesPage,
     GoogleLoginPage,

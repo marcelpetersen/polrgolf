@@ -33,11 +33,11 @@
     <button ion-button primary (click)="call(course.biz_phone)">
       Call
     </button>
-    <!--<button ion-button primary (click)="startRound()">
-      Start Round
-    </button>-->
     <button ion-button primary (click)="launchMaps()">
       Navigate
+    </button>
+    <button ion-button primary (click)="startRound()">
+      Play
     </button>
   </div>
   <preload-image (click)="launchMaps()" [ratio]="{w:4, h:3}" src="https://maps.googleapis.com/maps/api/staticmap?center={{course.location.coordinates[1]}},{{course.location.coordinates[0]}}&zoom=15&size=400x300&scale=2&markers=icon:http://res.cloudinary.com/zendoks/image/upload/v1496453323/courses/marker.png|{{course.location.coordinates[1]}},{{course.location.coordinates[0]}}"

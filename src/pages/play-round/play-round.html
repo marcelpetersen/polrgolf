@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Play Round</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="contact-card-content">
+  <ion-list class="details-list">
+    <ion-item>
+      <ion-label>
+        Course:
+      </ion-label>
+      <ion-label end text-right>
+        {{ course.biz_name }}
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        Date:
+      </ion-label>
+      <ion-label end text-right>
+        {{ todaysDate | date }}
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tee Box:</ion-label>
+      <ion-select [(ngModel)]="selectedTeeBox">
+        <ion-option value="Back">Back</ion-option>
+        <ion-option value="Middle">Middle</ion-option>
+        <ion-option value="Front">Front</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <ion-row class="contact-details-row" wrap>
+    <ion-col no-padding>
+      <h2 class="contact-name">Tee Box Details ({{ selectedTeeBox }})</h2>
+    </ion-col>
+  </ion-row>
+  <ion-list class="details-list">
+    <ion-item>
+      <ion-label>
+        Distance:
+      </ion-label>
+      <ion-label end text-right>
+        6,500 yrds
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        Rating:
+      </ion-label>
+      <ion-label end text-right>
+        70.70
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Slope:</ion-label>
+      <ion-label end text-right>
+        128
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-row class="actions-row">
+    <ion-col no-padding width-100>
+      <button ion-button block class="auth-action-button logout-button">Start Round</button>
+    </ion-col>
+  </ion-row>
+</ion-content>

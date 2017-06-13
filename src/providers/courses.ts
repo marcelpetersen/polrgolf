@@ -13,7 +13,7 @@ export class Courses {
     }
 
     geoQuery(params?: any) {
-        return this.api.get('course/geo/' + params.long + '/' + params.lat)
+        return this.api.get('golfcourse/geo/' + params.long + '/' + params.lat)
             .map(resp => {
                 var foundCourses = resp.json().courses;
                 return foundCourses;
@@ -21,7 +21,7 @@ export class Courses {
     }
 
     query(params?: any) {
-        return this.api.get('course/' + params.id)
+        return this.api.get('golfcourse/' + params.id)
             .map(resp => {
                 var foundCourses = resp.json();
                 return foundCourses;

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Renderer } from '@angular/core';
 import { NavController, LoadingController, ToastController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -29,8 +29,19 @@ export class MapsPage implements OnInit {
     public GoogleMapsService: GoogleMapsService,
     public geolocation: Geolocation,
     public keyboard: Keyboard,
-    public courses: Courses
+    public courses: Courses,
+    public renderer: Renderer
   ) {
+  }
+
+  swipeEvent($e) {
+    // swipe up $e.direction = 8;
+
+    console.log($e.direction);
+    // pan for get fired position
+    console.log($e.deltaX + ", " + $e.deltaY);
+    this.renderer.setElementStyle($e.target, 'top', $e.deltaY + 'px')
+
   }
 
   ngOnInit() {
@@ -76,12 +87,16 @@ export class MapsPage implements OnInit {
     env.courses.geoQuery({ long: location.lng(), lat: location.lat() }).subscribe(
       courses => {
 
+        console.log(JSON.stringify(courses));
+
         if (courses.length > 0) {
 
           let bound = new google.maps.LatLngBounds();
           for (var i = 0; i < courses.length; i++) {
-            bound.extend(new google.maps.LatLng(courses[i].location.coordinates[1], courses[i].location.coordinates[0]));
-            env.map_model.addNearbyPlace(courses[i]);
+            if (courses[i].Location !== undefined) {
+              bound.extend(new google.maps.LatLng(courses[i].Location.coordinates[1], courses[i].Location.coordinates[0]));
+              env.map_model.addNearbyPlace(courses[i]);
+            }
           }
 
           env.choosePlace(env.map_model.nearby_places[0]);

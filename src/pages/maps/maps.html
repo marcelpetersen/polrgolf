@@ -36,13 +36,12 @@
       </div>
       <ion-scroll [hidden]="map_model.nearby_places.length == 0" scrollX="true" class="nearby-places-container">
         <ion-row class="nearby-places-row">
-          <ion-col width-64 class="place-item-outer" *ngFor="let place of map_model.nearby_places" [ngClass]="{'selected-place': place.selected}"
-            (click)="choosePlace(place)">
+          <ion-col width-64 class="place-item-outer" *ngFor="let place of map_model.nearby_places" [ngClass]="{'selected-place': place.selected}">
             <ion-card class="place-card">
-              <background-image class="place-image-heading" [src]="place.details.image">
+              <background-image class="place-image-heading" [src]="place.details.image" (tap)="choosePlace(place)">
                 <ion-row class="heading-row">
                   <ion-col no-padding width-100>
-                    <h2 class="place-title">{{ place.details.biz_name }}</h2>
+                    <h2 class="place-title">{{ place.details.CourseName }}</h2>
                   </ion-col>
                 </ion-row>
               </background-image>

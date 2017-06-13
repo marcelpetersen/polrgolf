@@ -15,9 +15,10 @@
   </ion-slides>
   <ion-row class="contact-details-row" wrap>
     <ion-col no-padding>
-      <h2 class="contact-name">{{ course.biz_name }}</h2>
+      <h2 class="contact-name">{{ course.CourseName}}</h2>
     </ion-col>
-    <ion-col no-padding width-35 class="rating-col" style="position: relative" (click)="openInAppBrowser(course.golf_advisor_url)" *ngIf="course.golf_advisor_url !== undefined">
+    <ion-col no-padding width-35 class="rating-col" style="position: relative" (click)="openInAppBrowser(course.golf_advisor_url)"
+      *ngIf="course.golf_advisor_url !== undefined">
       <img src="./assets/images/logo-ga.png" style="position: absolute; top: -20px; right: 0px; z-index: 10; width: 100px">
       <div class="contact-rating">
         <ion-item class="rating-item">
@@ -29,8 +30,8 @@
       </div>
     </ion-col>
   </ion-row>
-  <div class="button-bar" *ngIf="course.biz_phone !== undefined">
-    <button ion-button primary (click)="call(course.biz_phone)">
+  <div class="button-bar">
+    <button ion-button primary (click)="call(course.PhoneNumber)" *ngIf="course.PhoneNumber !== undefined">
       Call
     </button>
     <button ion-button primary (click)="launchMaps()">
@@ -40,14 +41,14 @@
       Play
     </button>
   </div>
-  <preload-image (click)="launchMaps()" [ratio]="{w:4, h:3}" src="https://maps.googleapis.com/maps/api/staticmap?center={{course.location.coordinates[1]}},{{course.location.coordinates[0]}}&zoom=15&size=400x300&scale=2&markers=icon:http://res.cloudinary.com/zendoks/image/upload/v1496453323/courses/marker.png|{{course.location.coordinates[1]}},{{course.location.coordinates[0]}}"
+  <preload-image (click)="launchMaps()" [ratio]="{w:4, h:3}" src="https://maps.googleapis.com/maps/api/staticmap?center={{course.Location.coordinates[1]}},{{course.Location.coordinates[0]}}&zoom=15&size=400x300&scale=2&markers=icon:http://res.cloudinary.com/zendoks/image/upload/v1496453323/courses/marker.png|{{course.Location.coordinates[1]}},{{course.Location.coordinates[0]}}"
     alt="{{ contact.name }} location map" title="{{ contact.name }} - {{ contact.address }}"></preload-image>
   <ion-list class="details-list">
     <ion-item class="detail-item">
       <ion-avatar item-left>
         <ion-icon name="pin"></ion-icon>
       </ion-avatar>
-      <span class="detail-text" (click)="launchMaps()">{{ course.e_address }} {{ course.e_city }} {{ course.e_postal }}</span>
+      <span class="detail-text" (click)="launchMaps()">{{ course.StreetAddress }} {{ course.City }} {{ course.Zip }}</span>
       <span class="detail-text" style="margin-top: 10px">
         {{ course.distanceText }}
       </span>
@@ -62,7 +63,7 @@
       <ion-avatar item-left>
         <ion-icon name="call"></ion-icon>
       </ion-avatar>
-      <span class="detail-text" (click)="call(course.biz_phone)">{{ course.biz_phone }}</span>
+      <span class="detail-text" (click)="call(course.PhoneNumber)">{{ course.PhoneNumber }}</span>
     </ion-item>
     <!--<ion-item class="detail-item">
       <ion-avatar item-left>

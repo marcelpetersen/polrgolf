@@ -133,6 +133,7 @@ maps-page {
             @include align-items(flex-end);
             .place-title {
               display: inline-block;
+              font-family: 'Ropa Sans', sans-serif;
               width: 100%;
               text-align: left;
               font-size: 5vw;

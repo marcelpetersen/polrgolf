@@ -63,7 +63,7 @@ export class MapsModel {
 	}
 
 	addNearbyPlace(place_result) {
-		let _map_place = this.addPlaceToMap(new google.maps.LatLng(place_result.location.coordinates[1], place_result.location.coordinates[0]), '#666666');
+		let _map_place = this.addPlaceToMap(new google.maps.LatLng(place_result.Location.coordinates[1], place_result.Location.coordinates[0]), '#666666');
 		_map_place.details = place_result;
 		if (place_result.main_photo !== undefined) {
 			_map_place.details["image"] = place_result.main_photo;

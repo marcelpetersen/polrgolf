@@ -54,7 +54,7 @@ export class ContactCardPage {
       let options: LaunchNavigatorOptions = {
         start: position.coords.latitude + ',' + position.coords.longitude
       };
-      let location = this.course.e_address + ' ' + this.course.e_city + ' ' + this.course.e_postal;
+      let location = this.course.StreetAddress + ' ' + this.course.City + ' ' + this.course.StateorRegion + ' ' + this.course.Zip;
       this.launchNavigator.navigate(location, options)
         .then(
         success => console.log('Launched navigator'),

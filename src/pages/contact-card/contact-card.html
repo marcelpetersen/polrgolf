@@ -17,15 +17,15 @@
     <ion-col no-padding>
       <h2 class="contact-name">{{ course.CourseName}}</h2>
     </ion-col>
-    <ion-col no-padding width-35 class="rating-col" style="position: relative" (click)="openInAppBrowser(course.golf_advisor_url)"
-      *ngIf="course.golf_advisor_url !== undefined">
+    <ion-col no-padding width-35 class="rating-col" style="position: relative" (click)="openInAppBrowser(course.GolfAdvisorUrl)"
+      *ngIf="course.GolfAdvisorUrl !== undefined">
       <img src="./assets/images/logo-ga.png" style="position: absolute; top: -20px; right: 0px; z-index: 10; width: 100px">
       <div class="contact-rating">
         <ion-item class="rating-item">
-          <rating [(ngModel)]="course.golf_advisor_rating" max="5" read-only="true"></rating>
+          <rating [(ngModel)]="course.GolfAdvisorRating" max="5" read-only="true"></rating>
         </ion-item>
-        <p class="contact-description" *ngIf="course.golf_advisor_par > 0 && course.golf_advisor_holes > 0">
-          Par: {{course.golf_advisor_par}} - Holes: {{course.golf_advisor_holes}}
+        <p class="contact-description" *ngIf="course.GolfAdvisorPar > 0 && course.GolfAdvisorHoles > 0">
+          Par: {{course.GolfAdvisorPar}} - Holes: {{course.GolfAdvisorHoles}}
         </p>
       </div>
     </ion-col>

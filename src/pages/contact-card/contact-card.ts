@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { CallNumber } from '@ionic-native/call-number';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { EmailComposer } from '@ionic-native/email-composer';
@@ -18,9 +18,11 @@ export class ContactCardPage {
   course: any;
   destination: string;
   start: string;
+  _loading: any;
 
   constructor(
     public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     public callNumber: CallNumber,
     private emailComposer: EmailComposer,
     public inAppBrowser: InAppBrowser,
@@ -29,13 +31,15 @@ export class ContactCardPage {
     public geolocation: Geolocation,
     private launchNavigator: LaunchNavigator
   ) {
-    //TODO: Need to call course api endpoint to get more details
+    this._loading = this.loadingCtrl.create();
+    this._loading.present();
     this.course = navParams.get('course');
     courses.query({ 'id': this.course._id }).subscribe(courseResult => {
       this.course = courseResult;
       if (this.course.main_photo == undefined) {
         this.course.main_photo = 'http://res.cloudinary.com/zendoks/image/upload/v1496289734/courses/pexels-photo-28276.jpg';
       }
+      this._loading.dismiss();
     });
   }
 

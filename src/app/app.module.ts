@@ -25,6 +25,7 @@ import { FiltersPage } from '../pages/filters/filters';
 import { TermsOfServicePage } from '../pages/terms-of-service/terms-of-service';
 import { TakePicturePage } from '../pages/take-picture/take-picture';
 import { PlayRoundPage } from '../pages/play-round/play-round';
+import { ScoreCardPage } from '../pages/score-card/score-card';
 
 import { PreloadImage } from '../components/preload-image/preload-image';
 import { BackgroundImage } from '../components/background-image/background-image';
@@ -45,6 +46,7 @@ import { List1Service } from '../pages/list-1/list-1.service';
 import { List2Service } from '../pages/list-2/list-2.service';
 import { ScheduleService } from '../pages/schedule/schedule.service';
 import { Courses } from '../providers/providers';
+import { ScoreCards } from '../providers/providers';
 import { Api } from '../providers/api';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -107,6 +109,7 @@ const cloudSettings: CloudSettings = {
     TermsOfServicePage,
     TakePicturePage,
     PlayRoundPage,
+    ScoreCardPage,
     MapsPage,
     FunctionalitiesPage,
     GoogleLoginPage,
@@ -152,6 +155,7 @@ const cloudSettings: CloudSettings = {
     TermsOfServicePage,
     TakePicturePage,
     PlayRoundPage,
+    ScoreCardPage,
     MapsPage,
     FunctionalitiesPage,
     GoogleLoginPage,
@@ -185,6 +189,7 @@ const cloudSettings: CloudSettings = {
     Transfer,
     EmailComposer,
     Courses,
+    ScoreCards,
     Api
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

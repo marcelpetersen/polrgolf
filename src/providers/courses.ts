@@ -28,4 +28,12 @@ export class Courses {
             });
     }
 
+    queryByName(params?: any) {
+        return this.api.get('golfcourse/all/' + params.name)
+            .map(resp => {
+                var foundCourses = resp.json();
+                return foundCourses;
+            });
+    }
+
 }

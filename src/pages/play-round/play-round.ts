@@ -1,45 +1,78 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { CallNumber } from '@ionic-native/call-number';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { EmailComposer } from '@ionic-native/email-composer';
-import { PlayRoundModel } from './playround.model';
+import { NavController, NavParams, LoadingController, ModalController, ToastController } from 'ionic-angular';
 import { Courses } from '../../providers/providers';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { ScoreCardPage } from '../score-card/score-card';
+import { Auth, User } from '@ionic/cloud-angular';
 
 @Component({
   selector: 'play-round-page',
   templateUrl: 'play-round.html'
 })
 export class PlayRoundPage {
-  playRoundModel: PlayRoundModel = new PlayRoundModel();
   course: any;
+  selectedCourse: any;
+  courseName: string;
   todaysDate: Date;
+  allCourses: any[];
+  _loading: any;
+  selectedTeeBox: string;
+
 
   constructor(
-    public navCtrl: NavController,
-    public callNumber: CallNumber,
-    private emailComposer: EmailComposer,
+    private navCtrl: NavController,
     public inAppBrowser: InAppBrowser,
-    navParams: NavParams,
-    courses: Courses
+    private navParams: NavParams,
+    public modal: ModalController,
+    public auth: Auth,
+    public user: User,
+    public toastCtrl: ToastController,
+    private loadingCtrl: LoadingController,
+    private courses: Courses
   ) {
-    //TODO: Need to call course api endpoint to get more details
-    this.course = navParams.get('course');
+
+  }
+
+  ngOnInit() {
+    this._loading = this.loadingCtrl.create();
+    this._loading.present();
+    this.course = this.navParams.get('course');
     this.todaysDate = new Date();
-    courses.query({ 'id': this.course._id }).subscribe(courseResult => {
-      this.course = courseResult;
-      if (this.course.main_photo == undefined) {
-        this.course.main_photo = 'http://res.cloudinary.com/zendoks/image/upload/v1496289734/courses/pexels-photo-28276.jpg';
+    this.selectedCourse = this.course;
+    this.selectedTeeBox = this.course.TeeName;
+    var env = this;
+    this.courses.queryByName({ 'name': this.course.CourseName }).subscribe(courseResult => {
+      env.allCourses = courseResult.courses;
+      env.courseName = this.course.CourseName;
+      env._loading.dismiss();
+    });
+  }
+
+  updateSelected() {
+    console.log('Selected tee box: ' + this.selectedTeeBox);
+    this.allCourses.forEach(course => {
+      if (course.TeeName === this.selectedTeeBox) {
+        this.selectedCourse = course;
       }
     });
   }
 
-  startRound() {
-    //coming soon
-  }
-
   openInAppBrowser(website) {
     this.inAppBrowser.create(website, '_blank', "location=yes");
+  }
+
+  showScoreCardModel() {
+    // TODO: Need to check auth first. If not logged in then prompt to create account/login.
+    if (this.auth.isAuthenticated()) {
+      let modal = this.modal.create(ScoreCardPage);
+      modal.present();
+    } else {
+      let toast = this.toastCtrl.create({
+        message: 'Please login or signup to continue...',
+        duration: 3000
+      });
+      toast.present();
+    }
   }
 
 }

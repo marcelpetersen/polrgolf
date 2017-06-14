@@ -11,7 +11,7 @@
         Course:
       </ion-label>
       <ion-label end text-right>
-        {{ course.biz_name }}
+        {{ courseName }}
       </ion-label>
     </ion-item>
     <ion-item>
@@ -24,10 +24,8 @@
     </ion-item>
     <ion-item>
       <ion-label>Tee Box:</ion-label>
-      <ion-select [(ngModel)]="selectedTeeBox">
-        <ion-option value="Back">Back</ion-option>
-        <ion-option value="Middle">Middle</ion-option>
-        <ion-option value="Front">Front</ion-option>
+      <ion-select [(ngModel)]="selectedTeeBox" (ionChange)="updateSelected()">
+        <ion-option *ngFor="let course of allCourses" value="{{course.TeeName}}">{{course.TeeName}}</ion-option>
       </ion-select>
     </ion-item>
   </ion-list>
@@ -42,7 +40,7 @@
         Distance:
       </ion-label>
       <ion-label end text-right>
-        6,500 yrds
+        {{ selectedCourse.Length }} Yards
       </ion-label>
     </ion-item>
     <ion-item>
@@ -50,19 +48,19 @@
         Rating:
       </ion-label>
       <ion-label end text-right>
-        70.70
+        {{ selectedCourse.Rating }} <button  ion-button icon-only small (click)="openInAppBrowser('https://en.wikipedia.org/wiki/Slope_rating')"><ion-icon name="help"></ion-icon></button>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>Slope:</ion-label>
       <ion-label end text-right>
-        128
+        {{ selectedCourse.Slope }} <button  ion-button icon-only small (click)="openInAppBrowser('https://en.wikipedia.org/wiki/Slope_rating')"><ion-icon name="help"></ion-icon></button>
       </ion-label>
     </ion-item>
   </ion-list>
   <ion-row class="actions-row">
     <ion-col no-padding width-100>
-      <button ion-button block class="auth-action-button logout-button">Start Round</button>
+      <button ion-button block class="auth-action-button logout-button" (click)="showScoreCardModel()">Start Round</button>
     </ion-col>
   </ion-row>
 </ion-content>

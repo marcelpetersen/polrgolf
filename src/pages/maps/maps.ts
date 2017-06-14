@@ -87,8 +87,6 @@ export class MapsPage implements OnInit {
     env.courses.geoQuery({ long: location.lng(), lat: location.lat() }).subscribe(
       courses => {
 
-        console.log(JSON.stringify(courses));
-
         if (courses.length > 0) {
 
           let bound = new google.maps.LatLngBounds();

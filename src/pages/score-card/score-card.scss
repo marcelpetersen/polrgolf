@@ -1,7 +1,7 @@
-play-round-page {
+score-card-page {
   $contact-card-slides-height: 45%;
   .actions-row {
-    padding: 24px 16px;
+    padding: 0 16px 24px 16px;
     .auth-action-button {
       margin: 0px;
       @include call-to-action-button-styles(color($colors, button, base), color($colors, button, contrast));

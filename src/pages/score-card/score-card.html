@@ -1,9 +1,66 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Score Card</ion-title>
+    <ion-title>{{ course.CourseName }}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content class="contact-card-content">
-
+  <ion-list>
+    <ion-item>
+      <ion-range min="1" step="1" max="18" snaps="true" [(ngModel)]="currentHole" debounce="700" (ionChange)="checkHoleInformation()">
+        <ion-label range-left class="small-text">Hole</ion-label>
+        <ion-label range-right>{{currentHole}}</ion-label>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        Distance:
+      </ion-label>
+      <ion-label end text-right>
+        {{ course['Hole_' + currentHole] }} Yards
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        Par:
+      </ion-label>
+      <ion-label end text-right>
+        {{ course['Par_' + currentHole] }}
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        Handicap:
+      </ion-label>
+      <ion-label end text-right>
+        {{ course['Hdcp ' + currentHole] }}
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-range min="1" step="1" max="10" snaps="true" [(ngModel)]="currentScore" debounce="700">
+        <ion-label range-left class="small-text">Score</ion-label>
+        <ion-label range-right>{{currentScore}}</ion-label>
+      </ion-range>
+    </ion-item>
+  </ion-list>
+  <ion-row class="actions-row">
+    <ion-col no-padding width-100>
+      <button ion-button block class="auth-action-button logout-button" (click)="saveHoleScore()">Save Hole</button>
+    </ion-col>
+  </ion-row>
+  <ion-row class="contact-details-row" wrap>
+    <ion-col no-padding>
+      <h2 class="contact-name">Round Summary</h2>
+    </ion-col>
+  </ion-row>
+  <ion-list class="user-data-content">
+    <ion-item>
+      <ion-label>
+        Score:
+      </ion-label>
+      <ion-label end text-right>
+        {{runningScore > 0 ? '+' : ''}}{{runningScore}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

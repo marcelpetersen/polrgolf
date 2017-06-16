@@ -19,6 +19,8 @@ export class ScoreCardPage {
   scorecard: any = {};
   currentScore: number = 1;
   runningScore: number = 0;
+  runningScoreFront9: number = 0;
+  runningScoreBack9: number = 0;
 
   constructor(
     private navCtrl: NavController,
@@ -53,31 +55,26 @@ export class ScoreCardPage {
       // Load existing round
       let scoreCardId = this.navParams.get('incompleteScoreCardId');
       this.scorecards.findScorecard(scoreCardId).subscribe(scorecardResult => {
-
-        console.log(JSON.stringify(scorecardResult));
         if (scorecardResult) {
-
-          //TODO: CourseId not saving?
           this.courses.query({ 'id': scorecardResult.CourseId }).subscribe(courseResult => {
-
             env.course = courseResult;
             env.scorecard = {
               PlayerName: this.user.details.name,
               UserId: this.user.id,
               CourseName: courseResult.CourseName,
-              CourseId: courseResult._id,
-              Scores: scorecardResult.Scores
+              CourseId: scorecardResult.CourseId,
+              Scores: scorecardResult.Scores,
+              IsCompleted: false,
+              IsDiscarded: false
             };
-
             env.scorecard['_id'] = scoreCardId;
-            console.log(JSON.stringify(courseResult));
-
-            //env.scorecard = scorecardResult;
+            scorecardResult.Scores.forEach(score => {
+              env.calculateScore({ 'Hole': score.Hole, 'Score': score.Score });
+            });
+            env.checkHoleInformation();
             this._loading.dismiss();
-
           });
         }
-
       });
     }
   }
@@ -97,12 +94,17 @@ export class ScoreCardPage {
   saveHoleScore() {
     var env = this;
     let holeScore = { 'Hole': env.currentHole, 'Score': env.currentScore };
+    let foundExistingHoleScore = false;
     if (env.scorecard.Scores.length > 0) {
       env.scorecard.Scores.forEach(score => {
         if (score.Hole === env.currentHole) {
           score.Score = env.currentScore;
+          foundExistingHoleScore = true;
         }
       });
+      if (!foundExistingHoleScore) {
+        env.scorecard.Scores.push(holeScore);
+      }
     } else {
       env.scorecard.Scores.push(holeScore);
     }
@@ -123,6 +125,11 @@ export class ScoreCardPage {
     if (parNumber === holeScore.Score) {
       holeTotal = 0;
     }
+    if (holeNumber <= 9) {
+      this.runningScoreFront9 += holeTotal;
+    } else {
+      this.runningScoreBack9 += holeTotal;
+    }
     this.runningScore += holeTotal;
   }
 
@@ -131,12 +138,16 @@ export class ScoreCardPage {
     env._loading = this.loadingCtrl.create();
     env._loading.present();
     env.scorecards.update(env.scorecard).subscribe(updateResult => {
-      env._loading.dismiss();
       env.currentScore = 1;
-      if (env.currentHole <= 18) {
+      if (env.currentHole < 18) {
         env.currentHole++;
       } else {
         env.currentHole = 1;
+      }
+      env._loading.dismiss();
+      // Check to see if round is complete
+      if (env.scorecard.Scores.length === 18) {
+        alert('Is your round complete?');
       }
     });
   }

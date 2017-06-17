@@ -4,6 +4,7 @@ import { ScoreCards } from '../../providers/providers';
 import { Courses } from '../../providers/providers';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { User } from '@ionic/cloud-angular';
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
 
 @Component({
   selector: 'score-card-page',
@@ -21,6 +22,10 @@ export class ScoreCardPage {
   runningScore: number = 0;
   runningScoreFront9: number = 0;
   runningScoreBack9: number = 0;
+  scoreSection: string = 'scorecard';
+  speechRecognitionIsAvailable: boolean = false;
+  isListening: boolean;
+  speechNotes: string;
 
   constructor(
     private navCtrl: NavController,
@@ -30,10 +35,14 @@ export class ScoreCardPage {
     private loadingCtrl: LoadingController,
     private scorecards: ScoreCards,
     public courses: Courses,
+    private speechRecognition: SpeechRecognition
   ) {
     this._loading = this.loadingCtrl.create();
     this._loading.present();
     var env = this;
+    env.isListening = false;
+    env.speechRecognition.isRecognitionAvailable()
+      .then((available: boolean) => env.speechRecognitionIsAvailable = available);
     if (this.navParams.get('selectedCourse')) {
       // Start new round...
       this.course = this.navParams.get('selectedCourse');
@@ -150,6 +159,84 @@ export class ScoreCardPage {
         alert('Is your round complete?');
       }
     });
+  }
+
+  stopListening() {
+    this.isListening = false;
+    this.speechRecognition.stopListening()
+  }
+
+  startListening() {
+
+    console.log('Requesting presmission...');
+    var env = this;
+    this.speechRecognition.hasPermission()
+      .then((hasPermission: boolean) => {
+        if (hasPermission) {
+          console.log('Permission granted');
+          // setTimeout(function () {
+          //   console.log('stop listenting called.');
+          //   env.speechRecognition.stopListening()
+          // }, 3000);
+          env.isListening = true;
+          this.speechRecognition.startListening()
+            .subscribe(
+            (matches: Array<string>) => {
+              console.log(matches);
+              env.speechNotes = matches[0];
+            },
+            (onerror) => console.log('error:', onerror)
+            )
+        } else {
+          this.speechRecognition.requestPermission()
+            .then(
+            () => {
+              console.log('Permission granted');
+              // setTimeout(function () {
+              //   console.log('stop listenting called.');
+              //   env.speechRecognition.stopListening()
+              // }, 3000);
+              env.isListening = true;
+              this.speechRecognition.startListening()
+                .subscribe(
+                (matches: Array<string>) => {
+                  console.log(matches);
+                  env.speechNotes = matches[0];
+                },
+                (onerror) => console.log('error:', onerror)
+                )
+            },
+            () => console.log('Denied')
+            )
+        }
+      });
+
+
+
+
+    // let hasPermission: boolean = false;
+    // this.speechRecognition.hasPermission()
+    //   .then((hasPermission: boolean) => hasPermission = hasPermission);
+
+    // if (!hasPermission) {
+    //   this.speechRecognition.requestPermission()
+    //     .then(
+    //     () => {
+    //       this.speechRecognition.startListening()
+    //         .subscribe(
+    //         (matches: Array<string>) => console.log(matches),
+    //         (onerror) => console.log('error:', onerror)
+    //         )
+    //     },
+    //     () => console.log('Denied')
+    //     ) 
+    // } else {
+    //   this.speechRecognition.startListening()
+    //     .subscribe(
+    //     (matches: Array<string>) => console.log(matches),
+    //     (onerror) => console.log('error:', onerror)
+    //     )
+    // }
   }
 
 }

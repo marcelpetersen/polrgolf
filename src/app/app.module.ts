@@ -63,6 +63,7 @@ import { Keyboard } from '@ionic-native/keyboard';
 import { Geolocation } from '@ionic-native/geolocation';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { LaunchNavigator } from '@ionic-native/launch-navigator';
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
 
 // Functionalities
 import { FunctionalitiesPage } from '../pages/functionalities/functionalities';
@@ -185,6 +186,7 @@ const cloudSettings: CloudSettings = {
     Geolocation,
     AppVersion,
     LaunchNavigator,
+    SpeechRecognition,
     Camera,
     Transfer,
     EmailComposer,

@@ -47,6 +47,7 @@ import { List2Service } from '../pages/list-2/list-2.service';
 import { ScheduleService } from '../pages/schedule/schedule.service';
 import { Courses } from '../providers/providers';
 import { ScoreCards } from '../providers/providers';
+import { HoleNotes } from '../providers/providers';
 import { Api } from '../providers/api';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -192,6 +193,7 @@ const cloudSettings: CloudSettings = {
     EmailComposer,
     Courses,
     ScoreCards,
+    HoleNotes,
     Api
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

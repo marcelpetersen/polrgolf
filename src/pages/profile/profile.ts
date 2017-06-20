@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { MenuController, SegmentButton, App, NavParams, LoadingController } from 'ionic-angular';
+import { MenuController, SegmentButton, App, NavParams, LoadingController, ModalController } from 'ionic-angular';
 import { FollowersPage } from '../followers/followers';
 import { SettingsPage } from '../settings/settings';
 import { ProfileModel } from './profile.model';
+import { ScoreCardPage } from '../score-card/score-card';
 import { ProfileService } from './profile.service';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { User } from '@ionic/cloud-angular';
+import { ScoreCards } from '../../providers/providers';
 
 @Component({
   selector: 'profile-page',
@@ -15,6 +17,7 @@ export class ProfilePage {
   display: string;
   profile: ProfileModel = new ProfileModel();
   loading: any;
+  previousRounds: any;
 
   constructor(
     public menu: MenuController,
@@ -22,10 +25,12 @@ export class ProfilePage {
     public navParams: NavParams,
     public profileService: ProfileService,
     public loadingCtrl: LoadingController,
+    public modal: ModalController,
     public socialSharing: SocialSharing,
-    public user: User
+    public user: User,
+    private scorecards: ScoreCards,
   ) {
-    this.display = "list";
+    this.display = "grid";
   }
 
   ionViewDidLoad() {
@@ -41,6 +46,16 @@ export class ProfilePage {
       env.profile.user.email = this.user.details.email;
       env.profile.user.image = this.user.details.image;
     }
+
+    env.scorecards.query({ 'UserId': env.user.id, 'IsDiscarded': false }).subscribe(scorecardsResult => {
+      env.previousRounds = scorecardsResult.scorecards.reverse();
+    });
+
+  }
+
+  openScoreCard(scoreCardId) {
+    let modal = this.modal.create(ScoreCardPage, { incompleteScoreCardId: scoreCardId });
+    modal.present();
   }
 
   goToFollowersList() {

@@ -137,7 +137,6 @@
             "cordova-plugin-inappbrowser": {},
             "cordova-plugin-nativestorage": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-statusbar": {},
             "cordova-plugin-whitelist": {},
             "cordova-plugin-x-socialsharing": {},
             "ionic-plugin-keyboard": {},
@@ -148,7 +147,8 @@
             },
             "uk.co.workingedge.phonegap.plugin.launchnavigator": {},
             "cordova-plugin-app-version": {},
-            "cordova-plugin-speechrecognition": {}
+            "cordova-plugin-speechrecognition": {},
+            "cordova-plugin-statusbar": {}
         },
         "platforms": [
             "android",

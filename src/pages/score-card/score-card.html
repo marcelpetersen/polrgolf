@@ -1,13 +1,23 @@
 <ion-header>
   <ion-navbar>
     <ion-title>{{ course.CourseName }}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">
+        Close
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="score-card-content">
+
+  <div class="pyro" *ngIf="showFireworks">
+    <div class="before"></div>
+    <div class="after"></div>
+  </div>
 
   <div padding>
-    <ion-segment [(ngModel)]="scoreSection">
+    <ion-segment [(ngModel)]="scoreSection" class="user-content-segment">
       <ion-segment-button value="scorecard">
         Scorecard
       </ion-segment-button>
@@ -18,56 +28,101 @@
   </div>
 
   <div [ngSwitch]="scoreSection">
-    <ion-list *ngSwitchCase="'scorecard'">
-      <ion-item>
-        <h1 text-center>Hole #: {{currentHole}} - {{ course['Hole_' + currentHole] }} Yards - Par {{ course['Par_' + currentHole] }}</h1>
-      </ion-item>
-      <ion-item>
-        <ion-range min="1" step="1" max="18" snaps="true" [(ngModel)]="currentHole" debounce="700" (ionChange)="checkHoleInformation()">
-          <ion-label range-left class="small-text">Hole</ion-label>
-          <ion-label range-right>{{currentHole}}</ion-label>
-        </ion-range>
-      </ion-item>
+    <div *ngSwitchCase="'scorecard'">
+      <ion-row style="margin: 0 10px 0 10px">
+        <ion-col>
+          <h2 style="color: #758C42; margin-top: 20px; opacity: .9">{{ course['Hole_' + currentHole] }} Yards</h2>
+        </ion-col>
+        <ion-col text-center>
+          <h1 style="color: #142B3B; margin-top: 5px; font-size: 2.5em">Hole {{currentHole}}</h1>
+        </ion-col>
+        <ion-col text-right>
+          <h2 style="color: #758C42; margin-top: 20px; opacity: .9">Par {{ course['Par_' + currentHole] }}</h2>
+        </ion-col>
+      </ion-row>
+      <img src="./assets/images/grass.png" style="margin-top: -20px" />
+      <ion-list class="details-list">
+        <ion-item>
+          <ion-range min="1" step="1" max="18" snaps="true" [(ngModel)]="currentHole" debounce="700" (ionChange)="loadHoleInformation()">
+            <ion-label range-left class="small-text">Hole</ion-label>
+            <ion-label range-right>{{currentHole}}</ion-label>
+          </ion-range>
+        </ion-item>
+        <ion-item>
+          <ion-range min="1" step="1" max="10" snaps="true" [(ngModel)]="currentScore" debounce="700">
+            <ion-label range-left class="small-text">Score</ion-label>
+            <ion-label range-right>{{currentScore}}</ion-label>
+          </ion-range>
+        </ion-item>
+        <ion-item>
+          <ion-range min="1" step="1" max="10" snaps="true" [(ngModel)]="currentPutts" debounce="700">
+            <ion-label range-left class="small-text">Putts</ion-label>
+            <ion-label range-right>{{currentPutts}}</ion-label>
+          </ion-range>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Handicap:
+          </ion-label>
+          <ion-label end text-right>
+            {{ course['Hdcp ' + currentHole] }}
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Notes:
+          </ion-label>
+          <ion-label end text-wrap>
+            <p>{{speechNotes || 'No notes found.'}}</p>
+            <img src="./assets/images/recording.gif" *ngIf="isListening" style="width: 30px; float: right; margin-top: -18px">
+            <button ion-button small *ngIf="speechRecognitionIsAvailable && !isListening" (click)="startListening()">Record</button>
+            <button ion-button small *ngIf="isListening" (click)="stopListening()">Stop</button>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="!isListening">
+          <ion-row class="actions-row">
+            <ion-col width-100>
+              <button ion-button block class="auth-action-button logout-button" (click)="saveHoleScore()">Save Hole</button>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-list>
+    </div>
+    <ion-list *ngSwitchCase="'roundsummary'">
+      <ion-row style="margin: 0 10px 0 10px">
+        <ion-col>
+          <h2 style="color: #758C42; margin-top: 20px; opacity: .9">{{runningPutts}} Putts</h2>
+        </ion-col>
+        <ion-col text-center>
+          <h1 style="color: #142B3B; margin-top: 5px; font-size: 2.5em">{{runningScore > 0 ? '+' : ''}}{{runningScore}}</h1>
+        </ion-col>
+        <ion-col text-right>
+          <h2 style="color: #758C42; margin-top: 20px; opacity: .9">Through {{scorecard.Scores.length}}</h2>
+        </ion-col>
+      </ion-row>
+      <img src="./assets/images/grass.png" style="margin-top: -20px" />
       <ion-item>
         <ion-label>
-          Handicap:
+          Progress:
         </ion-label>
         <ion-label end text-right>
-          {{ course['Hdcp ' + currentHole] }}
+          {{scorecard.Scores.length}} holes completed.
         </ion-label>
       </ion-item>
-      <ion-item>
-        <ion-range min="1" step="1" max="10" snaps="true" [(ngModel)]="currentScore" debounce="700">
-          <ion-label range-left class="small-text">Score</ion-label>
-          <ion-label range-right>{{currentScore}}</ion-label>
-        </ion-range>
-      </ion-item>
-      <ion-item>
-        <ion-label>
-          Notes:
-        </ion-label>
-        <ion-label end text-wrap>
-          <p>{{speechNotes || 'No notes found.'}}</p>
-          <button ion-button small *ngIf="speechRecognitionIsAvailable && !isListening" (click)="startListening()">Create</button>
-          <button ion-button small *ngIf="isListening" (click)="stopListening()">Stop Listening</button>
-        </ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-row class="actions-row">
-          <ion-col width-100>
-            <button ion-button block class="auth-action-button logout-button" (click)="saveHoleScore()">Save Hole</button>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-    </ion-list>
-
-    <ion-list *ngSwitchCase="'roundsummary'">
       <ion-item>
         <ion-label>
           Front 9:
         </ion-label>
         <ion-label end text-right>
           {{runningScoreFront9 > 0 ? '+' : ''}}{{runningScoreFront9}}
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          &nbsp;&nbsp;&nbsp;&nbsp;- Putts
+        </ion-label>
+        <ion-label end text-right>
+          {{runningPuttsFront9}}
         </ion-label>
       </ion-item>
       <ion-item>
@@ -80,6 +135,14 @@
       </ion-item>
       <ion-item>
         <ion-label>
+          &nbsp;&nbsp;&nbsp;&nbsp;- Putts
+        </ion-label>
+        <ion-label end text-right>
+          {{runningPuttsBack9}}
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
           <strong>Score:</strong>
         </ion-label>
         <ion-label end text-right>
@@ -87,9 +150,17 @@
         </ion-label>
       </ion-item>
       <ion-item>
+        <ion-label>
+          <strong>&nbsp;&nbsp;&nbsp;&nbsp;- Total Putts:</strong>
+        </ion-label>
+        <ion-label end text-right>
+          <strong>{{runningPutts > 0 ? '+' : ''}}{{runningPutts}}</strong>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="!scorecard.IsCompleted">
         <ion-row class="actions-row">
           <ion-col no-padding width-100>
-            <button ion-button block class="auth-action-button logout-button" (click)="saveHoleScore()">End Round</button>
+            <button ion-button block class="auth-action-button logout-button" (click)="endRound()">End Round</button>
           </ion-col>
         </ion-row>
       </ion-item>

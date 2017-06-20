@@ -1,10 +1,11 @@
 import { Component, ViewChild, OnInit, Renderer } from '@angular/core';
-import { NavController, LoadingController, ToastController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, AlertController, ModalController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Keyboard } from '@ionic-native/keyboard';
-
+import { ScoreCards } from '../../providers/providers';
+import { Auth, User } from '@ionic/cloud-angular';
+import { ScoreCardPage } from '../score-card/score-card';
 import { Observable } from 'rxjs/Observable';
-
 import { GoogleMap } from "../../components/google-map/google-map";
 import { GoogleMapsService } from "./maps.service";
 import { MapsModel } from './maps.model';
@@ -29,6 +30,11 @@ export class MapsPage implements OnInit {
     public GoogleMapsService: GoogleMapsService,
     public geolocation: Geolocation,
     public keyboard: Keyboard,
+    private scorecards: ScoreCards,
+    public modal: ModalController,
+    public alertCtrl: AlertController,
+    public auth: Auth,
+    public user: User,
     public courses: Courses,
     public renderer: Renderer
   ) {
@@ -48,6 +54,7 @@ export class MapsPage implements OnInit {
     this._loading = this.loadingCtrl.create();
     this._loading.present();
 
+    this.checkForOpenRound();
     this._GoogleMap.$mapReady.subscribe(map => {
       this.map_model.init(map);
       this.geolocateMe();
@@ -203,4 +210,50 @@ export class MapsPage implements OnInit {
       );
     }
   }
+
+  checkForOpenRound() {
+    var env = this;
+    if (this.auth.isAuthenticated()) {
+      this.scorecards.findIncomplete(this.user.id).subscribe(scorecardResults => {
+        if (scorecardResults.scorecards.length > 0) {
+          let confirm = this.alertCtrl.create({
+            title: 'Incomplete scorecard detected!',
+            message: 'Please discard the incomplete scorecard or open it to continue your round at ' + scorecardResults.scorecards[0].CourseName + '.',
+            buttons: [
+              {
+                text: 'Discard',
+                handler: () => {
+                  scorecardResults.scorecards[0].IsCompleted = true;
+                  scorecardResults.scorecards[0].IsDiscarded = true;
+                  env.scorecards.update(scorecardResults.scorecards[0]).subscribe(updateResult => {
+                    let toast = env.toastCtrl.create({
+                      message: 'Your round has been discarded.',
+                      duration: 3000
+                    });
+                    toast.present();
+                  });
+                }
+              },
+              {
+                text: 'Open',
+                handler: () => {
+                  let modal = this.modal.create(ScoreCardPage, { incompleteScoreCardId: scorecardResults.scorecards[0]._id });
+                  modal.present();
+                }
+              }
+            ]
+          });
+          confirm.present();
+          return;
+        }
+      });
+    } else {
+      let toast = this.toastCtrl.create({
+        message: 'Please login or signup to continue...',
+        duration: 3000
+      });
+      toast.present();
+    }
+  }
+
 }

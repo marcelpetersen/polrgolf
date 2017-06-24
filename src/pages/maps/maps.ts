@@ -22,6 +22,9 @@ export class MapsPage implements OnInit {
   map_model: MapsModel = new MapsModel();
   currentDistanceText: string;
   _loading: any;
+  selectedPlaceImage: string;
+  selectedPlace: any = {};
+  displayPlaceDetails: boolean = false;
 
   constructor(
     public nav: NavController,
@@ -41,13 +44,7 @@ export class MapsPage implements OnInit {
   }
 
   swipeEvent($e) {
-    // swipe up $e.direction = 8;
-
-    console.log($e.direction);
-    // pan for get fired position
-    console.log($e.deltaX + ", " + $e.deltaY);
     this.renderer.setElementStyle($e.target, 'top', $e.deltaY + 'px')
-
   }
 
   ngOnInit() {
@@ -57,6 +54,7 @@ export class MapsPage implements OnInit {
     this.checkForOpenRound();
     this._GoogleMap.$mapReady.subscribe(map => {
       this.map_model.init(map);
+      map.panBy(0, 800);
       this.geolocateMe();
     });
 
@@ -177,6 +175,7 @@ export class MapsPage implements OnInit {
     let env = this;
     this._loading = this.loadingCtrl.create();
     this._loading.present();
+    this.displayPlaceDetails = false;
 
     // Check if the place is not already selected
     if (place) {
@@ -199,6 +198,11 @@ export class MapsPage implements OnInit {
           env.map_model.directions_display.setDirections(directions);
           env.currentDistanceText = 'That\'s ' + distance + ' away and will take ' + duration;
           place.details.distanceText = 'That\'s ' + distance + ' away and will take ' + duration;
+          env.selectedPlaceImage = place.details.image;
+          console.log(place.details.image);
+          env.selectedPlace = place.details;
+          console.log(JSON.stringify(place.details));
+          env.displayPlaceDetails = true;
         },
         e => {
           console.log('onError: %s', e);

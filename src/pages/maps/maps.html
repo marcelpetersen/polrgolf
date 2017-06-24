@@ -11,7 +11,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content style="background-color: #294c87">
   <ion-row no-padding class="map-row">
     <ion-col no-padding class="map-col">
       <div class="search-container">
@@ -31,12 +31,38 @@
           </ion-item>
         </ion-list>
       </div>
+      <background-image class="user-image-heading" [src]="selectedPlaceImage"></background-image>
+      <div class="place-details-container" text-center class="fade-in" [hidden]="!displayPlaceDetails" style="width: 100%; position: absolute; top: 75px; color: #ffffff; padding: 10px">
+        <h2 style="margin-bottom: 0">{{ selectedPlace.CourseName }}</h2>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-4>
+              <button ion-button outline color="light" full>
+          Call
+        </button>
+            </ion-col>
+            <ion-col col-4>
+              <button ion-button outline color="light" full>
+          Navigte
+        </button>
+            </ion-col>
+            <ion-col col-4>
+              <button ion-button outline color="light" full>
+          Play
+        </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <!--<h4 style="margin-top: 0">
+          <ion-icon name="call"></ion-icon> {{ selectedPlace.PhoneNumber }}</h4>-->
+        <h5>{{ selectedPlace.TotalHoles }} holes | Founded {{ selectedPlace.YearBuiltFounded }}</h5>
+      </div>
       <div class="map-container">
         <google-map [options]="map_model.map_options"></google-map>
       </div>
       <ion-scroll [hidden]="map_model.nearby_places.length == 0" scrollX="true" class="nearby-places-container">
         <ion-row class="nearby-places-row">
-          <ion-col width-64 class="place-item-outer" *ngFor="let place of map_model.nearby_places" [ngClass]="{'selected-place': place.selected}">
+          <ion-col width-80 class="place-item-outer" *ngFor="let place of map_model.nearby_places" [ngClass]="{'selected-place': place.selected}">
             <ion-card class="place-card">
               <background-image class="place-image-heading" [src]="place.details.image" (tap)="choosePlace(place)">
                 <ion-row class="heading-row">
@@ -54,8 +80,8 @@
                     <span class="distance-text">{{ currentDistanceText }}</span>
                   </ion-item>
                 </ion-list>
-                <ion-row class="details-button" *ngIf="place.selected">
-                  <button ion-button block outline (click)="openCourse(place.details)">Details</button>
+                <ion-row *ngIf="place.selected">
+                  <button ion-button block class="details-button" (click)="openCourse(place.details)">Details</button>
                 </ion-row>
               </div>
             </ion-card>

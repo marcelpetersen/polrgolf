@@ -11,7 +11,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content style="background-color: #294c87">
+<ion-content style="background-color: #294c87" no-bounce>
   <ion-row no-padding class="map-row">
     <ion-col no-padding class="map-col">
       <div class="search-container">
@@ -32,62 +32,81 @@
         </ion-list>
       </div>
       <background-image class="user-image-heading" [src]="selectedPlaceImage"></background-image>
-      <div class="place-details-container" text-center class="fade-in" [hidden]="!displayPlaceDetails" style="width: 100%; position: absolute; top: 75px; color: #ffffff; padding: 10px">
-        <h2 style="margin-bottom: 0">{{ selectedPlace.CourseName }}</h2>
-        <ion-grid>
+      <div class="place-details-container" [hidden]="indrag" text-center class="fade-in" style="width: 100%; position: absolute; top: 75px; color: #ffffff; padding: 10px; z-index: 100">
+
+        <h2 [hidden]="displayPlaceDetails">Hey there!</h2>
+        <h5 [hidden]="displayPlaceDetails">We found {{map_model.nearby_places.length || '--'}} courses near you...</h5>
+        <ion-grid [hidden]="displayPlaceDetails">
           <ion-row>
             <ion-col col-4>
               <button ion-button outline color="light" full>
+          Help
+        </button>
+            </ion-col>
+            <ion-col col-4>
+              <button ion-button outline color="light" full>
+          Settings
+        </button>
+            </ion-col>
+            <ion-col col-4>
+              <button ion-button outline color="light" full>
+          Share
+        </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <h5 [hidden]="displayPlaceDetails">Swipe right on a course below for details...</h5>
+        <h2 [hidden]="!displayPlaceDetails" style="margin-bottom: 0">{{ selectedPlace.CourseName }}</h2>
+        <ion-grid [hidden]="!displayPlaceDetails">
+          <ion-row>
+            <ion-col col-4>
+              <button ion-button outline color="light" full (click)="call(selectedPlace.PhoneNumber)">
           Call
         </button>
             </ion-col>
             <ion-col col-4>
-              <button ion-button outline color="light" full>
-          Navigte
+              <button ion-button outline color="light" full (click)="launchMaps()">
+          Navigate
         </button>
             </ion-col>
             <ion-col col-4>
-              <button ion-button outline color="light" full>
+              <button ion-button outline color="light" full (click)="startRound()">
           Play
         </button>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <!--<h4 style="margin-top: 0">
-          <ion-icon name="call"></ion-icon> {{ selectedPlace.PhoneNumber }}</h4>-->
-        <h5>{{ selectedPlace.TotalHoles }} holes | Founded {{ selectedPlace.YearBuiltFounded }}</h5>
+        <h5 [hidden]="!displayPlaceDetails">{{ selectedPlace.TotalHoles }} holes - est. {{ selectedPlace.YearBuiltFounded }}</h5>
+        <h5 [hidden]="!displayPlaceDetails">{{ currentDistanceText }}</h5>
       </div>
       <div class="map-container">
         <google-map [options]="map_model.map_options"></google-map>
       </div>
-      <ion-scroll [hidden]="map_model.nearby_places.length == 0" scrollX="true" class="nearby-places-container">
-        <ion-row class="nearby-places-row">
-          <ion-col width-80 class="place-item-outer" *ngFor="let place of map_model.nearby_places" [ngClass]="{'selected-place': place.selected}">
-            <ion-card class="place-card">
-              <background-image class="place-image-heading" [src]="place.details.image" (tap)="choosePlace(place)">
-                <ion-row class="heading-row">
-                  <ion-col no-padding width-100>
-                    <h2 class="place-title">{{ place.details.CourseName }}</h2>
-                  </ion-col>
-                </ion-row>
-              </background-image>
-              <div class="place-details-container">
-                <ion-list class="details-list" no-lines *ngIf="place.selected">
-                  <ion-item class="place-location">
-                    <ion-avatar item-left>
-                      <ion-icon name="pin"></ion-icon>
-                    </ion-avatar>
-                    <span class="distance-text">{{ currentDistanceText }}</span>
-                  </ion-item>
-                </ion-list>
-                <ion-row *ngIf="place.selected">
-                  <button ion-button block class="details-button" (click)="openCourse(place.details)">Details</button>
-                </ion-row>
-              </div>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-scroll>
+      <div class="nearby-places-container">
+        <button ion-button icon-only large outline style="position: absolute; bottom: 100px; left: 40%" (click)="_loading.present(); geolocateMe()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+        <ion-card class="place-card" [ngStyle]="{'background': 'url(' + place.details.image + ')', 'background-size': 'cover'}" *ngFor="let place of map_model.nearby_places.reverse(); let i = index"
+          (pan)="swipeEvent($event, place, i)" (touchend)="touchEnd($event);">
+          <h2 class="place-title">{{ place.details.CourseName }}</h2>
+          <!--<background-image class="place-image-heading" [src]="place.details.image">
+
+          </background-image>-->
+          <!--<div class="place-details-container">
+            <ion-list class="details-list" no-lines *ngIf="place.selected">
+              <ion-item class="place-location">
+                <ion-avatar item-left>
+                  <ion-icon name="pin"></ion-icon>
+                </ion-avatar>
+                <span class="distance-text">{{ currentDistanceText }}</span>
+              </ion-item>
+            </ion-list>
+            <ion-row *ngIf="place.selected">
+              <button ion-button block class="details-button" (click)="openCourse(place.details)">Details</button>
+            </ion-row>
+          </div>-->
+        </ion-card>
+      </div>
     </ion-col>
   </ion-row>
 </ion-content>

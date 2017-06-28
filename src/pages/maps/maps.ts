@@ -11,6 +11,9 @@ import { GoogleMapsService } from "./maps.service";
 import { MapsModel } from './maps.model';
 import { Courses } from '../../providers/providers';
 import { ContactCardPage } from '../contact-card/contact-card';
+import { CallNumber } from '@ionic-native/call-number';
+import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
+import { PlayRoundPage } from '../play-round/play-round';
 
 @Component({
   selector: 'maps-page',
@@ -25,15 +28,19 @@ export class MapsPage implements OnInit {
   selectedPlaceImage: string;
   selectedPlace: any = {};
   displayPlaceDetails: boolean = false;
+  indrag = false;
 
   constructor(
     public nav: NavController,
+    private launchNavigator: LaunchNavigator,
+    public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     public GoogleMapsService: GoogleMapsService,
     public geolocation: Geolocation,
     public keyboard: Keyboard,
     private scorecards: ScoreCards,
+    public callNumber: CallNumber,
     public modal: ModalController,
     public alertCtrl: AlertController,
     public auth: Auth,
@@ -41,10 +48,6 @@ export class MapsPage implements OnInit {
     public courses: Courses,
     public renderer: Renderer
   ) {
-  }
-
-  swipeEvent($e) {
-    this.renderer.setElementStyle($e.target, 'top', $e.deltaY + 'px')
   }
 
   ngOnInit() {
@@ -56,8 +59,30 @@ export class MapsPage implements OnInit {
       this.map_model.init(map);
       map.panBy(0, 800);
       this.geolocateMe();
+      this.selectedPlaceImage = 'assets/images/splash.png';
     });
 
+  }
+
+  startRound() {
+    console.log('Launch clicked');
+    this.navCtrl.push(PlayRoundPage, { course: this.selectedPlace });
+  }
+
+  launchMaps() {
+    this.geolocation.getCurrentPosition().then((position) => {
+      let options: LaunchNavigatorOptions = {
+        start: position.coords.latitude + ',' + position.coords.longitude
+      };
+      let location = this.selectedPlace.StreetAddress + ' ' + this.selectedPlace.City + ' ' + this.selectedPlace.StateorRegion + ' ' + this.selectedPlace.Zip;
+      this.launchNavigator.navigate(location, options)
+        .then(
+        success => console.log('Launched navigator'),
+        error => console.log('Error launching navigator', error)
+        );
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
   }
 
   ionViewDidEnter() {
@@ -102,7 +127,7 @@ export class MapsPage implements OnInit {
             }
           }
 
-          env.choosePlace(env.map_model.nearby_places[0]);
+          //env.choosePlace(env.map_model.nearby_places[0]);
           env.map_model.map.fitBounds(bound);
 
         } else {
@@ -171,10 +196,12 @@ export class MapsPage implements OnInit {
     });
   }
 
+
+
   choosePlace(place) {
     let env = this;
     this._loading = this.loadingCtrl.create();
-    this._loading.present();
+    //this._loading.present();
     this.displayPlaceDetails = false;
 
     // Check if the place is not already selected
@@ -196,12 +223,10 @@ export class MapsPage implements OnInit {
             distance = data[1].rows[0].elements[0].distance.text,
             duration = data[1].rows[0].elements[0].duration.text;
           env.map_model.directions_display.setDirections(directions);
-          env.currentDistanceText = 'That\'s ' + distance + ' away and will take ' + duration;
-          place.details.distanceText = 'That\'s ' + distance + ' away and will take ' + duration;
+          env.currentDistanceText = distance + ' away and will take ' + duration;
+          place.details.distanceText = distance + ' away and will take ' + duration;
           env.selectedPlaceImage = place.details.image;
-          console.log(place.details.image);
           env.selectedPlace = place.details;
-          console.log(JSON.stringify(place.details));
           env.displayPlaceDetails = true;
         },
         e => {
@@ -213,6 +238,45 @@ export class MapsPage implements OnInit {
         }
       );
     }
+  }
+
+  touchEnd($e) {
+    console.log('Touch end');
+    this.renderer.setElementStyle($e.target, 'bottom', '10px');
+    this.renderer.setElementStyle($e.target, 'opacity', '1');
+    this.indrag = false;
+  }
+
+  swipeEvent($e, place, index) {
+
+    var env = this;
+    console.log('Dir: ' + $e.direction);
+    console.log('DeltaY: ' + $e.deltaY)
+    if ($e.direction === 8) {
+      env.indrag = true;
+      if ($e.target.className === 'place-card card card-md' || $e.target.className === 'place-card card card-ios') {
+        if (index < 3) {
+          this.renderer.setElementStyle($e.target, 'opacity', '1');
+        }
+        this.renderer.setElementStyle($e.target, 'top', $e.deltaY + 'px');
+        if ($e.deltaY < -100) {
+          this.renderer.setElementStyle($e.target, 'opacity', '.7');
+        }
+        if ($e.deltaY < -150) {
+          this.renderer.setElementStyle($e.target, 'opacity', '.5');
+        }
+        if ($e.deltaY < -200) {
+          this.renderer.setElementStyle($e.target, 'opacity', '.2');
+        }
+        if ($e.deltaY < -250) {
+          if (env.selectedPlace.CourseName !== place.CourseName || env.selectedPlace.CourseName === undefined) {
+            this.renderer.setElementStyle($e.target, 'display', 'none');
+            env.choosePlace(place);
+          }
+        }
+      }
+    }
+
   }
 
   checkForOpenRound() {
@@ -258,6 +322,12 @@ export class MapsPage implements OnInit {
       });
       toast.present();
     }
+  }
+
+  call(number: string) {
+    this.callNumber.callNumber(number, true)
+      .then(() => console.log('Launched dialer!'))
+      .catch(() => console.log('Error launching dialer'));
   }
 
 }
